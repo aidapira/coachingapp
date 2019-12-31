@@ -128,7 +128,7 @@
                     
                   <h1>Create post</h1>
                   
-                  <form action="newpost" method="POST">
+                  <!-- <form action="newpost" method="POST">
                       {% csrf_token %}
                       <div class="form-group">
                           <label for="title">Title <span class="require">*</span></label>
@@ -153,7 +153,12 @@
                           </button>
                       </div>
                       
-                  </form>
+                  </form> -->
+                  <form method = "post" enctype="multipart/form-data"> 
+                    {% csrf_token %} 
+                    {{ form.as_p }} 
+                    <button type="submit">Upload</button> 
+                </form> 
               </div>
               
             </div>

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 import bcrypt
 from .models import *
+from .forms import *
 
 
 import argparse
@@ -151,9 +152,24 @@ def search(request):
 
 
 def create_post(request):
+    if request.method == 'POST': 
+        form = PostForm(request.POST, request.FILES) 
+  
+        if form.is_valid(): 
+
+            post = form.save(commit=False) 
+            user = User.objects.filter(username=request.session["username"])[0]     
+            post.posted_by = user
+            post.save()
+
+            return redirect('success') 
+    else: 
+        form = PostForm() 
     context = {
         "reg_user": User.objects.filter(username=request.session["username"])[0],
+        'form': form
     }
+    
     return render(request, "coaching_app/post.html", context)
 
 def new_post(request):
@@ -163,4 +179,30 @@ def new_post(request):
     print(post_created)
     print("*************")
     return redirect('/my_account')
+
+
+def post_image_view(request): 
+
+    if request.method == 'POST': 
+        form = PostForm(request.POST, request.FILES) 
+  
+        if form.is_valid(): 
+            form.save() 
+            return redirect('success') 
+    else: 
+        form = PostForm() 
+    return render(request, 'post.html', {'form' : form}) 
+  
+  
+def success(request): 
+    return HttpResponse('successfully uploaded')
+
+
+# def display_post_images(request): 
+  
+#     if request.method == 'GET': 
+  
+#         # getting all the objects of hotel. 
+#         Post = Post.objects.all()  
+#         return render(request, 'display_post_images.html', {'post_images' : Hotels}) 
 
